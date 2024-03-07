@@ -9,6 +9,7 @@
   <script src="jspsych-6.3.0/plugins/jspsych-preload.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-video-keyboard-response.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-html-button-response.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-fullscreen.js"></script>
   <link rel="stylesheet" href="jspsych-6.3.0/css/jspsych.css">
 </head>
 <body></body>
@@ -206,7 +207,14 @@
 
 
 jsPsych.init({
-    timeline: [start_trial, createInitialVideoTrial()].concat(preload, familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
+    timeline: [
+      {
+            type: 'fullscreen',
+            fullscreen_mode: true,
+            message: '<p>To participate in this experiment, you will need to enter fullscreen mode. Please click the button below to continue.</p>',
+            button_label: 'Enter Fullscreen'
+      },
+    start_trial, createInitialVideoTrial()].concat(preload, familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
     on_finish: function() {
       jsPsych.data.get().localSave('csv', subject_id + '.csv');
       endExperimentAndThank();
