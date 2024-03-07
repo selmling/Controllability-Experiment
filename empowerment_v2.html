@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <script src="jspsych-6.3.0/examples/js/snap.svg-min.js"></script>
+  <script src="jspsych-6.3.0/jspsych.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-vsl-animate-occlusion.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-preload.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-video-keyboard-response.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-html-button-response.js"></script>
+  <link rel="stylesheet" href="jspsych-6.3.0/css/jspsych.css">
+</head>
+<body></body>
+<script>
+
+  // Function to display a thank you message and end the experiment
+  function endExperimentAndThank() {
+    jsPsych.endExperiment('<p>Thank you for participating!</p>');
+  }
+
+  // Global event listener for the Escape key
+  document.addEventListener('keydown', function(e) {
+      if (e.key === "Escape" || e.keyCode === 27) { // 27 is the keyCode for Escape
+          endExperimentAndThank();
+      }
+  });
+
+  // Generate random subject id 
+  var subject_id = Math.floor(Math.random() * 100000);
+
+  var start_trial = {
+    type: 'html-button-response',
+    stimulus: 'Click to start the experiment.',
+    choices: ['Start']
+  };
+  
+  // Familiarization
+  // ---- Block of 10 VV trials
+
+  var fam_VV_trials = [];
+
+  for (var i = 0; i < 5; i++) {
+    fam_VV_trials.push({
+          stimulus: `stimuli/Fractal1_gif.gif`,
+          direction: 'left'
+      });
+  }
+
+  for (var i = 5; i < 10; i++) {
+    fam_VV_trials.push({
+          stimulus: `stimuli/Fractal1_gif.gif`,
+          direction: 'right'
+      });
+  }
+
+  fam_VV_trials = jsPsych.randomization.shuffle(fam_VV_trials);
+
+  // Omission 
+  // ---- Block of 6 VV trials
+
+  var omit_VV_sixer = [];
+
+  for (var i = 0; i < 3; i++) {
+    omit_VV_sixer.push({
+      stimulus: `stimuli/Fractal1_gif.gif`,
+      direction: 'left'
+    });
+  }
+  for (var i = 0; i < 3; i++) {
+    omit_VV_sixer.push({
+      stimulus: `stimuli/Fractal1_gif.gif`,
+      direction: 'right'
+    });
+  }
+
+  omit_VV_sixer = jsPsych.randomization.shuffle(omit_VV_sixer);
+
+  // ---- 2 VV trials
+
+  var omit_VV_trialA = {
+    type: 'vsl-animate-occlusion',
+    stimuli: [`stimuli/Fractal1_gif.gif`],
+    initial_direction: 'left',
+    canvas_size: [1920, 1080]
+  };
+
+  var omit_VV_trialB = {
+    type: 'vsl-animate-occlusion',
+    stimuli: [`stimuli/Fractal1_gif.gif`],
+    initial_direction: 'right',
+    canvas_size: [1920, 1080]
+  };
+
+  // ---- Omission trials
+
+  var omit_trialA = [{
+      type: 'vsl-animate-occlusion',
+      stimuli: [`stimuli/empty2.png`],
+    initial_direction: 'left',
+    canvas_size: [1920, 1080]
+    }];
+
+  var omit_trialB = [{
+      type: 'vsl-animate-occlusion',
+      stimuli: [`stimuli/empty2.png`],
+    initial_direction: 'left',
+    canvas_size: [1920, 1080]
+    }];
+
+  // create six block for omission block
+  var omit_sixer_block = omit_VV_sixer.map(function(item) {
+  return {
+    type: 'vsl-animate-occlusion',
+    stimuli: [item.stimulus],
+    initial_direction: item.direction,
+    canvas_size: [1920, 1080]
+  };
+  });
+
+  // Create a list of the different blocks/trials for the omission block
+  var omission_components = [
+    omit_sixer_block,
+    [omit_VV_trialA], // Note: wrapping the individual trials in an array to ensure they are treated as separate blocks
+    [omit_VV_trialB],
+    omit_trialA,
+    omit_trialB
+  ];
+
+  function createVideoTrial() {
+    return {
+        type: 'video-keyboard-response',
+        stimulus: ['stimuli/extended_loop_video.mp4'],
+        choices: ['Enter'],
+        trial_ends_after_video: false,
+        response_ends_trial: true,
+        on_finish: function(data) {
+            if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
+                // Proceed to the next trial when Enter is pressed
+                jsPsych.finishTrial();
+            }
+        }
+    };
+  }
+
+  function createInitialVideoTrial() {
+    return {
+      type: 'video-keyboard-response',
+      stimulus: ['stimuli/extended_loop_video.mp4'],
+      choices: ['Enter'],
+      trial_ends_after_video: false,
+      response_ends_trial: true,
+      on_finish: function(data) {
+          if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
+              // Proceed to the next trial when Enter is pressed
+              jsPsych.finishTrial();
+          }
+      }
+    };
+    }
+
+  // Create and shuffle the omission components
+  omission_components = jsPsych.randomization.shuffle(omission_components);
+
+  // Flatten and concatenate to create the randomized omission block
+  var omission_block = [];
+  omission_components.forEach(function(component) {
+    // If the component is an array (like omit_sixer_block), we need to add the video after each trial in the array
+    if (Array.isArray(component)) {
+        component.forEach(function(trial) {
+            omission_block.push(trial);
+            omission_block.push(createVideoTrial());
+        });
+    } else {
+        // If the component is a single trial, just add the trial and then the video
+        omission_block.push(component);
+        omission_block.push(createVideoTrial());
+    }
+  });
+
+  var preload = {
+    type: 'preload',
+    auto_preload: true
+  }
+
+  // // create familiarization block
+  // var familiarization_block = fam_VV_trials.map(function(item) {
+  // return {
+  //   type: 'vsl-animate-occlusion',
+  //   stimuli: [item.stimulus],
+  //   initial_direction: item.direction,
+  //   canvas_size: [1280,720]
+  // };
+  // });
+
+  var familiarization_block = [];
+  fam_VV_trials.forEach(function(item) {
+      familiarization_block.push({
+          type: 'vsl-animate-occlusion',
+          stimuli: [item.stimulus],
+          initial_direction: item.direction,
+          canvas_size: [1920, 1080]
+      });
+      familiarization_block.push(createVideoTrial());
+  });
+
+
+jsPsych.init({
+    timeline: [start_trial, createInitialVideoTrial()].concat(preload, familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
+    on_finish: function() {
+      jsPsych.data.get().localSave('csv', subject_id + '.csv');
+      endExperimentAndThank();
+    }
+});
+</script>
+
+</html>
