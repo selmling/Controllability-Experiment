@@ -83,14 +83,14 @@
     type: 'vsl-animate-occlusion',
     stimuli: [`stimuli/Fractal1_gif.gif`],
     initial_direction: 'left',
-    canvas_size: [1920, 1080]
+    canvas_size: [2160, 1620]
   };
 
   var omit_VV_trialB = {
     type: 'vsl-animate-occlusion',
     stimuli: [`stimuli/Fractal1_gif.gif`],
     initial_direction: 'right',
-    canvas_size: [1920, 1080]
+    canvas_size: [2160, 1620]
   };
 
   // ---- Omission trials
@@ -99,14 +99,14 @@
       type: 'vsl-animate-occlusion',
       stimuli: [`stimuli/empty2.png`],
     initial_direction: 'left',
-    canvas_size: [1920, 1080]
+    canvas_size: [2160, 1620]
     }];
 
   var omit_trialB = [{
       type: 'vsl-animate-occlusion',
       stimuli: [`stimuli/empty2.png`],
     initial_direction: 'left',
-    canvas_size: [1920, 1080]
+    canvas_size: [2160, 1620]
     }];
 
   // create six block for omission block
@@ -115,7 +115,7 @@
     type: 'vsl-animate-occlusion',
     stimuli: [item.stimulus],
     initial_direction: item.direction,
-    canvas_size: [1920, 1080]
+    canvas_size: [2160, 1620]
   };
   });
 
@@ -200,7 +200,7 @@
           type: 'vsl-animate-occlusion',
           stimuli: [item.stimulus],
           initial_direction: item.direction,
-          canvas_size: [1920, 1080]
+          canvas_size: [2160, 1620]
       });
       familiarization_block.push(createVideoTrial());
   });
