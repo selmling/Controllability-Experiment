@@ -81,6 +81,7 @@
 
   var omit_VV_trialA = {
     type: 'vsl-animate-occlusion',
+    auto_preload: true,
     stimuli: [`stimuli/Fractal1_gif.gif`],
     initial_direction: 'left',
     canvas_size: [960, 720]
@@ -88,6 +89,7 @@
 
   var omit_VV_trialB = {
     type: 'vsl-animate-occlusion',
+    auto_preload: true,
     stimuli: [`stimuli/Fractal1_gif.gif`],
     initial_direction: 'right',
     canvas_size: [960, 720]
@@ -97,6 +99,7 @@
 
   var omit_trialA = [{
       type: 'vsl-animate-occlusion',
+      auto_preload: true,
       stimuli: [`stimuli/empty2.png`],
     initial_direction: 'left',
     canvas_size: [960, 720]
@@ -104,6 +107,7 @@
 
   var omit_trialB = [{
       type: 'vsl-animate-occlusion',
+      auto_preload: true,
       stimuli: [`stimuli/empty2.png`],
     initial_direction: 'left',
     canvas_size: [960, 720]
@@ -113,6 +117,7 @@
   var omit_sixer_block = omit_VV_sixer.map(function(item) {
   return {
     type: 'vsl-animate-occlusion',
+    auto_preload: true,
     stimuli: [item.stimulus],
     initial_direction: item.direction,
     canvas_size: [960, 720]
@@ -131,6 +136,7 @@
   function createVideoTrial() {
     return {
         type: 'video-keyboard-response',
+        auto_preload: true,
         stimulus: ['stimuli/extended_loop_video.mp4'],
         choices: ['Enter'],
         trial_ends_after_video: false,
@@ -147,6 +153,7 @@
   function createInitialVideoTrial() {
     return {
       type: 'video-keyboard-response',
+      auto_preload: true,
       stimulus: ['stimuli/extended_loop_video.mp4'],
       choices: ['Enter'],
       trial_ends_after_video: false,
