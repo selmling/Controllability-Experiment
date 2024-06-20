@@ -146,6 +146,9 @@
             const videoElement = document.querySelector('video');
             if (videoElement) {
                 videoElement.focus(); // Ensure the video element is focused
+                videoElement.addEventListener('play', function() {
+                    videoElement.focus(); // Ensure focus when the video starts playing
+                });
             }
         },
         on_finish: function(data) {
@@ -169,6 +172,9 @@
           const videoElement = document.querySelector('video');
           if (videoElement) {
               videoElement.focus(); // Ensure the video element is focused
+              videoElement.addEventListener('play', function() {
+                  videoElement.focus(); // Ensure focus when the video starts playing
+              });
           }
       },
       on_finish: function(data) {
