@@ -73,6 +73,12 @@ jsPsych.plugins['vsl-animate-occlusion'] = (function() {
         pretty_name: 'Pre movement duration',
         default: 500,
         description: 'How long to wait before the stimuli starts moving from behind the center rectangle.'
+      },
+      auto_preload: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'Auto preload',
+        default: true,
+        description: 'If true, stimuli will be preloaded.'
       }
     }
   }
