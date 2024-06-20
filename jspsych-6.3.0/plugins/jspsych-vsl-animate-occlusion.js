@@ -120,7 +120,7 @@ jsPsych.plugins['vsl-animate-occlusion'] = (function() {
     var next_direction = (trial.initial_direction == "right") ? 0 : 1;
 
     if (trial.auto_preload) {
-      jsPsych.pluginAPI.autoPreload(trial.stimuli, function() { next_step(); }, 'image');
+      jsPsych.pluginAPI.preloadImages(trial.stimuli, function() { next_step(); });
     } else {
       next_step();
     }
