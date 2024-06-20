@@ -142,6 +142,12 @@
         choices: ['Enter'],
         trial_ends_after_video: false,
         response_ends_trial: true,
+        on_load: function() {
+            const videoElement = document.querySelector('video');
+            if (videoElement) {
+                videoElement.focus(); // Ensure the video element is focused
+            }
+        },
         on_finish: function(data) {
             if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
                 // Proceed to the next trial when Enter is pressed
@@ -159,14 +165,20 @@
       choices: ['Enter'],
       trial_ends_after_video: false,
       response_ends_trial: true,
+      on_load: function() {
+          const videoElement = document.querySelector('video');
+          if (videoElement) {
+              videoElement.focus(); // Ensure the video element is focused
+          }
+      },
       on_finish: function(data) {
           if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
               // Proceed to the next trial when Enter is pressed
               jsPsych.finishTrial();
-          }
-      }
+            }
+        }
     };
-    }
+  }
 
   // Create and shuffle the omission components
   omission_components = jsPsych.randomization.shuffle(omission_components);
