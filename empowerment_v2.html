@@ -143,13 +143,18 @@
         trial_ends_after_video: false,
         response_ends_trial: true,
         on_load: function() {
-            const videoElement = document.querySelector('video');
-            if (videoElement) {
-                videoElement.focus(); // Ensure the video element is focused
-                videoElement.addEventListener('play', function() {
-                    videoElement.focus(); // Ensure focus when the video starts playing
-                });
-            }
+            // Focus the document or a specific container
+            document.body.focus();
+            // Ensure the video element is focused after a slight delay
+            setTimeout(function() {
+                const videoElement = document.querySelector('video');
+                if (videoElement) {
+                    videoElement.focus();
+                    videoElement.addEventListener('play', function() {
+                        videoElement.focus();
+                    });
+                }
+            }, 100); // Adjust the delay as needed
         },
         on_finish: function(data) {
             if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
@@ -169,13 +174,18 @@
       trial_ends_after_video: false,
       response_ends_trial: true,
       on_load: function() {
-          const videoElement = document.querySelector('video');
-          if (videoElement) {
-              videoElement.focus(); // Ensure the video element is focused
-              videoElement.addEventListener('play', function() {
-                  videoElement.focus(); // Ensure focus when the video starts playing
-              });
-          }
+          // Focus the document or a specific container
+          document.body.focus();
+          // Ensure the video element is focused after a slight delay
+          setTimeout(function() {
+              const videoElement = document.querySelector('video');
+              if (videoElement) {
+                  videoElement.focus();
+                  videoElement.addEventListener('play', function() {
+                      videoElement.focus();
+                  });
+              }
+          }, 100); // Adjust the delay as needed
       },
       on_finish: function(data) {
           if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
