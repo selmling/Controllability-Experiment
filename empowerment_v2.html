@@ -206,6 +206,7 @@
   fam_VV_trials.forEach(function(item) {
       familiarization_block.push({
           type: 'vsl-animate-occlusion',
+          auto_preload: true,
           stimuli: [item.stimulus],
           initial_direction: item.direction,
           canvas_size: [960, 720]
