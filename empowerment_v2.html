@@ -68,6 +68,7 @@
       direction: 'left'
     });
   }
+
   for (var i = 0; i < 3; i++) {
     omit_VV_sixer.push({
       stimulus: `stimuli/Fractal1_gif.gif`,
@@ -101,16 +102,16 @@
       type: 'vsl-animate-occlusion',
       auto_preload: true,
       stimuli: [`stimuli/empty2.png`],
-    initial_direction: 'left',
-    canvas_size: [960, 720]
+      initial_direction: 'left',
+      canvas_size: [960, 720]
     }];
 
   var omit_trialB = [{
       type: 'vsl-animate-occlusion',
       auto_preload: true,
       stimuli: [`stimuli/empty2.png`],
-    initial_direction: 'left',
-    canvas_size: [960, 720]
+      initial_direction: 'left',
+      canvas_size: [960, 720]
     }];
 
   // create six block for omission block
@@ -189,7 +190,13 @@
   var preload = {
     type: 'preload',
     auto_preload: true,
-    images:[`stimuli/Fractal1_gif.gif`]
+    images: [
+      `stimuli/Fractal1_gif.gif`,
+      `stimuli/empty2.png`
+    ],
+    videos: [
+      'stimuli/TV_static_w_audio_under100MB.mp4'
+    ]
   }
 
   // // create familiarization block
@@ -223,7 +230,7 @@ jsPsych.init({
             message: '<p>To participate in this experiment, you will need to enter fullscreen mode. Please click the button below to continue.</p>',
             button_label: 'Enter Fullscreen'
       },
-    start_trial, createInitialVideoTrial()].concat(preload, familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
+      preload, start_trial, createInitialVideoTrial()].concat(familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
     on_finish: function() {
       jsPsych.data.get().localSave('csv', subject_id + '.csv');
       endExperimentAndThank();
