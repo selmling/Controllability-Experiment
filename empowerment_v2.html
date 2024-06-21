@@ -134,6 +134,31 @@
     omit_trialB
   ];
 
+  function simulateTap() {
+    const event = new Event('touchstart', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+    });
+
+    const touchObj = new Touch({
+        identifier: Date.now(),
+        target: document.body,
+        clientX: window.innerWidth / 2,
+        clientY: window.innerHeight / 2,
+        radiusX: 2.5,
+        radiusY: 2.5,
+        rotationAngle: 10,
+        force: 1,
+    });
+
+    event.touches = [touchObj];
+    event.targetTouches = [touchObj];
+    event.changedTouches = [touchObj];
+
+    document.body.dispatchEvent(event);
+  }
+
   function createVideoTrial() {
     return {
         type: 'video-keyboard-response',
@@ -143,18 +168,8 @@
         trial_ends_after_video: false,
         response_ends_trial: true,
         on_load: function() {
-            // Focus the document or a specific container
-            document.body.focus();
-            // Ensure the video element is focused after a slight delay
-            setTimeout(function() {
-                const videoElement = document.querySelector('video');
-                if (videoElement) {
-                    videoElement.focus();
-                    videoElement.addEventListener('play', function() {
-                        videoElement.focus();
-                    });
-                }
-            }, 100); // Adjust the delay as needed
+            // Simulate a tap on the screen
+            simulateTap(); // Adjust the delay as needed
         },
         on_finish: function(data) {
             if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
@@ -174,19 +189,9 @@
       trial_ends_after_video: false,
       response_ends_trial: true,
       on_load: function() {
-          // Focus the document or a specific container
-          document.body.focus();
-          // Ensure the video element is focused after a slight delay
-          setTimeout(function() {
-              const videoElement = document.querySelector('video');
-              if (videoElement) {
-                  videoElement.focus();
-                  videoElement.addEventListener('play', function() {
-                      videoElement.focus();
-                  });
-              }
-          }, 100); // Adjust the delay as needed
-      },
+            // Simulate a tap on the screen
+            simulateTap(); // Adjust the delay as needed
+        },
       on_finish: function(data) {
           if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
               // Proceed to the next trial when Enter is pressed
