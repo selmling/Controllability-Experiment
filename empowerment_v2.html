@@ -168,8 +168,10 @@
         trial_ends_after_video: false,
         response_ends_trial: true,
         on_load: function() {
-            // Simulate a tap on the screen
-            simulateTap(); // Adjust the delay as needed
+            // Delay the execution of simulateTap by 500 ms
+            setTimeout(function() {
+                simulateTap();
+            }, 500);
         },
         on_finish: function(data) {
             if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
@@ -189,8 +191,10 @@
       trial_ends_after_video: false,
       response_ends_trial: true,
       on_load: function() {
-            // Simulate a tap on the screen
-            simulateTap(); // Adjust the delay as needed
+            // Delay the execution of simulateTap by 500 ms
+            setTimeout(function() {
+                simulateTap();
+            }, 500);
         },
       on_finish: function(data) {
           if (data.key_press === jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Enter')) {
