@@ -28,23 +28,7 @@
   });
 
   // Generate random subject id 
-  var subject_id;
-
-  // Trial to prompt the participant to enter their subject ID
-var subjectID_trial = {
-  type: 'html-keyboard-response',
-  stimulus: '<p>Please enter your Subject ID and press Enter:</p>',
-  choices: jsPsych.NO_KEYS,
-  trial_duration: 10000,
-  on_load: function() {
-    var inputHTML = '<input type="text" id="subjectID" name="subjectID" style="font-size:24px; text-align:center;">';
-    document.querySelector('.jspsych-content').innerHTML += inputHTML;
-    document.getElementById('subjectID').focus();
-  },
-  on_finish: function() {
-    subject_id = document.getElementById('subjectID').value;
-  }
-};
+  var subject_id = Math.floor(Math.random() * 100000);
 
   var start_trial = {
     type: 'html-button-response',
@@ -277,7 +261,6 @@ var subjectID_trial = {
 
 jsPsych.init({
     timeline: [
-    subjectID_trial,
       {
             type: 'fullscreen',
             fullscreen_mode: true,
