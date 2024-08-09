@@ -7,6 +7,7 @@
   <script src="jspsych-6.3.0/jspsych.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-vsl-animate-occlusion.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-preload.js"></script>
+  <script src="jspsych-6.3.0/plugins/jspsych-survey-text.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-video-keyboard-response.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-html-button-response.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-fullscreen.js"></script>
@@ -23,12 +24,26 @@
   // Global event listener for the Escape key
   document.addEventListener('keydown', function(e) {
       if (e.key === "Escape" || e.keyCode === 27) { // 27 is the keyCode for Escape
+          jsPsych.data.get().localSave('csv', subjectID + '.csv');
           endExperimentAndThank();
       }
   });
 
-  // Generate random subject id 
-  var subject_id = Math.floor(Math.random() * 100000);
+  var subjectID = '';
+
+  // Enter subject id 
+  var subject_id_trial = {
+    type: 'survey-text',
+    questions: [{prompt: 'Please input the subject ID.', value: 'Subject ID'}],
+    on_finish: function(data) {
+      var subject_id = data.response.Q0;
+      if (subject_id) {
+      jsPsych.data.addProperties({subjectID: subject_id}); // Store the subject ID in the experiment data
+    } else {
+      console.error('No responses found');
+    }
+    }
+  };
 
   var start_trial = {
     type: 'html-button-response',
@@ -260,7 +275,8 @@
 
 
 jsPsych.init({
-    timeline: [
+    override_safe_mode: true,
+    timeline: [subject_id_trial,
       {
             type: 'fullscreen',
             fullscreen_mode: true,
