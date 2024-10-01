@@ -55,40 +55,34 @@
   </script>
 
 <script>
+  var subjectID = '';
 
   // Function to display a thank you message and end the experiment
   function endExperimentAndThank() {
     jsPsych.endExperiment('<p>Thank you for participating!</p>');
   }
 
-  // Long press event listener for touch devices (e.g., iPad)
-  let longPressTimer;
-
-  document.body.addEventListener('touchstart', function(e) {
-    longPressTimer = setTimeout(function() {
+  // Global event listener for Control + C combination
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'c') {  // Check if Control + C is pressed
+      jsPsych.endCurrentTimeline();  // Immediately end all ongoing trials
       var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
       saveToFirebase(subjectID, experiment_data);  // Save to Firebase
       endExperimentAndThank();  // Show thank you message
-    }, 2000);  // 2 seconds
+    }
   });
-
-document.body.addEventListener('touchend', function(e) {
-  clearTimeout(longPressTimer);  // Cancel long press if the user lifts their finger early
-});
-
-  var subjectID = '';
 
   // Enter subject id 
   var subject_id_trial = {
     type: 'survey-text',
     questions: [{prompt: 'Please input the subject ID.', value: 'Subject ID'}],
     on_finish: function(data) {
-      var subject_id = data.response.Q0;
-      if (subject_id) {
-      jsPsych.data.addProperties({subjectID: subject_id}); // Store the subject ID in the experiment data
-    } else {
-      console.error('No responses found');
-    }
+      subjectID = data.response.Q0;  // Store in the global variable subjectID
+      if (subjectID) {
+        jsPsych.data.addProperties({subjectID: subjectID}); // Store the subject ID in the experiment data
+      } else {
+        console.error('No responses found');
+      }
     }
   };
 
