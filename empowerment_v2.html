@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
+  
   <script src="jspsych-6.3.0/examples/js/snap.svg-min.js"></script>
   <script src="jspsych-6.3.0/jspsych.js"></script>
   <script src="jspsych-6.3.0/plugins/jspsych-vsl-animate-occlusion.js"></script>
@@ -14,6 +13,47 @@
   <link rel="stylesheet" href="jspsych-6.3.0/css/jspsych.css">
 </head>
 <body></body>
+
+// Firebase set up
+  // Github pages' Firebase configuration (given to us by firebase)
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAS7DhfKt1OiILVNd6Hrj2zUGOA0Dr2Xaw",
+      authDomain: "controllability-8d2a8.firebaseapp.com",
+      projectId: "controllability-8d2a8",
+      storageBucket: "controllability-8d2a8.appspot.com",
+      messagingSenderId: "251098270739",
+      appId: "1:251098270739:web:eacc7a47a139bcc12b83e6"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize Firestore
+  const db = getFirestore(app);
+
+    // Function to save data to Firebase
+    async function saveToFirebase(subjectID, experiment_data) {
+      try {
+        await addDoc(collection(db, "experiment_data"), {
+          subjectID: subjectID,
+          trials: experiment_data,
+          timestamp: new Date().toISOString()
+        });
+        console.log("Data saved to Firebase!");
+      } catch (e) {
+        console.error("Error saving data: ", e);
+      }
+    }
+  </script>
+
 <script>
 
   // Function to display a thank you message and end the experiment
@@ -23,10 +63,12 @@
 
   // Global event listener for the Escape key
   document.addEventListener('keydown', function(e) {
-      if (e.key === "Escape" || e.keyCode === 27) { // 27 is the keyCode for Escape
-          jsPsych.data.get().localSave('csv', subjectID + '.csv');
-          endExperimentAndThank();
-      }
+    if (e.key === "Escape" || e.keyCode === 27) { // 27 is the keyCode for Escape
+      var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
+      saveToFirebase(subjectID, experiment_data);  // Save to Firebase
+      jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Save as CSV locally
+      endExperimentAndThank();  // Show thank you message
+    }
   });
 
   var subjectID = '';
@@ -274,21 +316,24 @@
   });
 
 
-jsPsych.init({
-    override_safe_mode: true,
-    timeline: [subject_id_trial,
-      {
-            type: 'fullscreen',
-            fullscreen_mode: true,
-            message: '<p>To participate in this experiment, you will need to enter fullscreen mode. Please click the button below to continue.</p>',
-            button_label: 'Enter Fullscreen'
-      },
-      preload, start_trial, createInitialVideoTrial()].concat(familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
-    on_finish: function() {
-      jsPsych.data.get().localSave('csv', subject_id + '.csv');
-      endExperimentAndThank();
-    }
-});
+  jsPsych.init({
+      override_safe_mode: true,
+      timeline: [
+        subject_id_trial,
+        {
+              type: 'fullscreen',
+              fullscreen_mode: true,
+              message: '<p>To participate in this experiment, you will need to enter fullscreen mode. Please click the button below to continue.</p>',
+              button_label: 'Enter Fullscreen'
+        },
+        preload, start_trial, createInitialVideoTrial()].concat(familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
+      on_finish: function() {
+        var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
+        saveToFirebase(subjectID, experiment_data);  // Save to Firebase
+        jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Optional: Save as CSV locally
+        endExperimentAndThank();  // Show thank you message
+      }
+  });
 </script>
 
 </html>
