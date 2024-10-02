@@ -65,9 +65,20 @@
   // Global event listener for Control + C combination
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'c') {  // Check if Control + C is pressed
-      jsPsych.endCurrentTimeline();  // Immediately end all ongoing trials
+
+      // Check if a trial is ongoing and finish it
+      if (typeof jsPsych.finishTrial === 'function') {
+        jsPsych.finishTrial();  // End any active trial
+      }
+
+      // End the timeline and save the data
+      jsPsych.endCurrentTimeline();  // End the entire timeline
+
+      // Save the experiment data
       var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
       saveToFirebase(subjectID, experiment_data);  // Save to Firebase
+
+      // Display the thank you message
       endExperimentAndThank();  // Show thank you message
     }
   });
