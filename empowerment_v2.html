@@ -14,46 +14,6 @@
 </head>
 <body></body>
 
-// Firebase set up
-  // Github pages' Firebase configuration (given to us by firebase)
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAS7DhfKt1OiILVNd6Hrj2zUGOA0Dr2Xaw",
-      authDomain: "controllability-8d2a8.firebaseapp.com",
-      projectId: "controllability-8d2a8",
-      storageBucket: "controllability-8d2a8.appspot.com",
-      messagingSenderId: "251098270739",
-      appId: "1:251098270739:web:eacc7a47a139bcc12b83e6"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-
-    // Initialize Firestore
-  const db = getFirestore(app);
-
-    // Function to save data to Firebase
-    async function saveToFirebase(subjectID, experiment_data) {
-      try {
-        await addDoc(collection(db, "experiment_data"), {
-          subjectID: subjectID,
-          trials: experiment_data,
-          timestamp: new Date().toISOString()
-        });
-        console.log("Data saved to Firebase!");
-      } catch (e) {
-        console.error("Error saving data: ", e);
-      }
-    }
-  </script>
-
 <script>
   var subjectID = '';
 
@@ -73,10 +33,6 @@
 
       // End the timeline and save the data
       jsPsych.endCurrentTimeline();  // End the entire timeline
-
-      // Save the experiment data
-      var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
-      saveToFirebase(subjectID, experiment_data);  // Save to Firebase
 
       // Display the thank you message
       endExperimentAndThank();  // Show thank you message
@@ -338,8 +294,6 @@
         },
         preload, start_trial, createInitialVideoTrial()].concat(familiarization_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block, omission_block),
       on_finish: function() {
-        var experiment_data = jsPsych.data.get().json();  // Get all experiment data in JSON format
-        saveToFirebase(subjectID, experiment_data);  // Save to Firebase
         jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Optional: Save as CSV locally
         endExperimentAndThank();  // Show thank you message
       }
