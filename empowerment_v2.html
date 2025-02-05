@@ -17,25 +17,34 @@
 <script>
   var subjectID = '';
 
+  // Preload the boop.wav sound
+  var boopSound = new Audio('boop.wav');
+
   // Function to display a thank you message and end the experiment
   function endExperimentAndThank() {
     jsPsych.endExperiment('<p>Thank you for participating!</p>');
   }
 
+  // Function to end the experiment after the sound plays
+  function endExperimentAfterSound() {
+      boopSound.play();  // Play the sound
+
+      // Wait for the sound to finish before ending the experiment
+      boopSound.onended = function() {
+        // Check if a trial is ongoing and finish it
+        if (typeof jsPsych.finishTrial === 'function') {
+          jsPsych.finishTrial();  // End any active trial
+        }
+
+        jsPsych.endCurrentTimeline();  // End the entire timeline
+        endExperimentAndThank();  // Show thank you message
+      };
+    }
+
   // Global event listener for Control + C combination
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'c') {  // Check if Control + C is pressed
-
-      // Check if a trial is ongoing and finish it
-      if (typeof jsPsych.finishTrial === 'function') {
-        jsPsych.finishTrial();  // End any active trial
-      }
-
-      // End the timeline and save the data
-      jsPsych.endCurrentTimeline();  // End the entire timeline
-
-      // Display the thank you message
-      endExperimentAndThank();  // Show thank you message
+        endExperimentAfterSound();
     }
   });
 
