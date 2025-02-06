@@ -76,7 +76,18 @@
   var start_trial = {
     type: 'html-button-response',
     stimulus: 'Click to start the experiment.',
-    choices: ['Start']
+    choices: ['Start'],
+    on_finish: function() {
+        // Unlock audio playback by playing and pausing the boop sound
+        boopSound.muted = true;
+        boopSound.play().then(() => {
+            boopSound.pause();
+            boopSound.muted = false; // Unmute after unlocking
+            console.log("Audio unlocked!");
+        }).catch(error => {
+            console.warn("Audio unlock failed:", error);
+        });
+    }
   };
   
   // Familiarization
