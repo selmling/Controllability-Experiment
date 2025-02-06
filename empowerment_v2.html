@@ -78,16 +78,20 @@
     stimulus: 'Click to start the experiment.',
     choices: ['Start'],
     on_finish: function() {
-        // Play the boop sound to test if it works
-        boopSound.play().then(() => {
-            console.log("Boop sound played successfully");
-        }).catch(error => {
-            console.warn("Boop sound failed:", error);
-            alert("Press OK to manually play the sync beep.");
-            boopSound.play();  // Retry after user interaction
-        });
-    }
-  };
+        // Unlock audio playback with a silent sound
+        var silentSound = new Audio();
+        silentSound.play().catch(() => {}); // Unlocks audio policy
+
+        // Play the boop sound immediately after unlocking
+        setTimeout(() => {
+            boopSound.play().then(() => {
+                console.log("Boop sound played successfully");
+            }).catch(error => {
+                console.warn("Boop sound failed:", error);
+            });
+        }, 100); // Short delay ensures unlocking works
+      }
+    };
 
   
   // Familiarization
