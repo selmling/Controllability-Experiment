@@ -17,45 +17,25 @@
 <script>
   var subjectID = '';
 
-  // Preload the boop.wav sound
-  var boopSound = new Audio('boop.wav');
-
   // Function to display a thank you message and end the experiment
   function endExperimentAndThank() {
     jsPsych.endExperiment('<p>Thank you for participating!</p>');
   }
 
-  // Function to end the experiment after the sound plays
-  function endExperimentAfterSound() {
-      // First, finish any active trial to stop other sounds
-      if (typeof jsPsych.finishTrial === 'function') {
-          jsPsych.finishTrial();
-      }
-
-      // Short delay to ensure all sounds stop before playing the boop
-      setTimeout(() => {
-          boopSound.play().then(() => {
-              console.log("Boop sound played successfully");
-          }).catch(error => {
-              console.warn("Audio play failed, requiring user interaction:", error);
-              alert("Press OK to play the sync beep before ending the study.");
-              boopSound.play();
-          });
-
-          // Wait for the boop sound to finish before ending the experiment
-          boopSound.onended = function() {
-              console.log("Boop sound finished, saving CSV and ending experiment.");
-              jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Save data
-              jsPsych.endCurrentTimeline();  // End experiment timeline
-              endExperimentAndThank();  // Show thank you message
-          };
-      }, 100); // Short delay to prevent overlapping sounds
-    }
-
   // Global event listener for Control + C combination
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'c') {  // Check if Control + C is pressed
-        endExperimentAfterSound();
+
+      // Check if a trial is ongoing and finish it
+      if (typeof jsPsych.finishTrial === 'function') {
+        jsPsych.finishTrial();  // End any active trial
+      }
+
+      // End the timeline and save the data
+      jsPsych.endCurrentTimeline();  // End the entire timeline
+
+      // Display the thank you message
+      endExperimentAndThank();  // Show thank you message
     }
   });
 
@@ -76,23 +56,8 @@
   var start_trial = {
     type: 'html-button-response',
     stimulus: 'Click to start the experiment.',
-    choices: ['Start'],
-    on_finish: function() {
-        // Unlock audio playback with a silent sound
-        var silentSound = new Audio();
-        silentSound.play().catch(() => {}); // Unlocks audio policy
-
-        // Play the boop sound immediately after unlocking
-        setTimeout(() => {
-            boopSound.play().then(() => {
-                console.log("Boop sound played successfully");
-            }).catch(error => {
-                console.warn("Boop sound failed:", error);
-            });
-        }, 100); // Short delay ensures unlocking works
-      }
-    };
-
+    choices: ['Start']
+  };
   
   // Familiarization
   // ---- Block of 10 VV trials
