@@ -27,29 +27,39 @@
 
   // Function to end the experiment after the sound plays
   function endExperimentAfterSound() {
-      // First, finish any active trial to stop other sounds
-      if (typeof jsPsych.finishTrial === 'function') {
-          jsPsych.finishTrial();
-      }
+    // First, finish any active trial to stop other sounds
+    if (typeof jsPsych.getCurrentTrial === 'function' && jsPsych.getCurrentTrial()) {
+        jsPsych.finishTrial();
+    }
 
-      // Short delay to ensure all sounds stop before playing the boop
-      setTimeout(() => {
-          boopSound.play().then(() => {
-              console.log("Boop sound played successfully");
-          }).catch(error => {
-              console.warn("Audio play failed, requiring user interaction:", error);
-              alert("Press OK to play the sync beep before ending the study.");
-              boopSound.play();
-          });
+    // Create a visible button for user interaction to play the beep
+    let beepButton = document.createElement("button");
+    beepButton.innerText = "Play Sync Beep & End Study";
+    beepButton.style.position = "fixed";
+    beepButton.style.top = "50%";
+    beepButton.style.left = "50%";
+    beepButton.style.transform = "translate(-50%, -50%)";
+    beepButton.style.padding = "15px 30px";
+    beepButton.style.fontSize = "16px";
+    beepButton.style.zIndex = "1000";
+    document.body.appendChild(beepButton);
 
-          // Wait for the boop sound to finish before ending the experiment
-          boopSound.onended = function() {
-              console.log("Boop sound finished, saving CSV and ending experiment.");
-              jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Save data
-              jsPsych.endCurrentTimeline();  // End experiment timeline
-              endExperimentAndThank();  // Show thank you message
-          };
-      }, 100); // Short delay to prevent overlapping sounds
+    beepButton.addEventListener("click", function() {
+        boopSound.play().then(() => {
+            console.log("Boop sound played successfully");
+        }).catch(error => {
+            console.warn("Audio play failed:", error);
+        });
+
+        // Wait for the sound to finish before saving and ending
+        boopSound.onended = function() {
+            console.log("Boop sound finished, saving CSV and ending experiment.");
+            jsPsych.data.get().localSave('csv', subjectID + '.csv');  // Save data
+            jsPsych.endCurrentTimeline();  // End experiment timeline
+            endExperimentAndThank();  // Show thank you message
+            document.body.removeChild(beepButton);  // Remove button after click
+        };
+    });
     }
 
   // Global event listener for Control + C combination
