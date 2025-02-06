@@ -22,6 +22,14 @@
     jsPsych.endExperiment('<p>Thank you for participating!</p>');
   }
 
+  // Play a sound @ end of exp for syncing timestamps to behavioral coding in ELAN
+  var boop_trial = {
+    type: 'audio-keyboard-response',
+    stimulus: 'stimuli/boop.wav',
+    choices: jsPsych.NO_KEYS, // No response needed
+    trial_ends_after_audio: true // Ends when sound finishes
+  };
+
   // Global event listener for Control + C combination
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'c') {  // Check if Control + C is pressed
@@ -31,11 +39,26 @@
         jsPsych.finishTrial();  // End any active trial
       }
 
+      // Push boop_trial, then save CSV, then end experiment
+      jsPsych.addNodeToEndOfTimeline([
+            boop_trial,
+            {
+                type: 'call-function',
+                func: function() {
+                    jsPsych.data.get().localSave('csv', subjectID + '.csv');
+                }
+            },
+            {
+                type: 'html-keyboard-response',
+                stimulus: '<p>Thank you for participating!</p>',
+                choices: jsPsych.NO_KEYS,
+                trial_duration: 1000  // Show message briefly before ending
+            }
+        ]);
+
       // End the timeline and save the data
       jsPsych.endCurrentTimeline();  // End the entire timeline
 
-      // Display the thank you message
-      endExperimentAndThank();  // Show thank you message
     }
   });
 
@@ -256,8 +279,9 @@
     ],
     videos: [
       'stimuli/TV_static_w_audio_under100MB.mp4'
-    ]
-  }
+    ],
+    audio: ['sound/boop.wav']
+  };
 
   // // create familiarization block
   // var familiarization_block = fam_VV_trials.map(function(item) {
